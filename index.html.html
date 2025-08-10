@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Pet Adoption</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+       
+          background-image: url('https://i.pinimg.com/736x/5d/39/ac/5d39ac6dd040f6f81ae874f1969a310b.jpg'); /* replace with your image URL */
+    background-size: cover; /* make image cover the screen */
+    background-position: center; /* center the image */
+    background-repeat: no-repeat; /* no tiling */
+
+    }
+    header {
+        background-color: #ff6f61;
+        color: white;
+        padding: 15px;
+        text-align: center;
+        font-size: 24px;
+    }
+    .container {
+        padding: 20px;
+        max-width: 900px;
+        margin: auto;
+    }
+    .pet-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 20px;
+    }
+    .pet-card {
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        padding: 10px;
+        text-align: center;
+        background: white;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .pet-card img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+    button {
+        background-color: #ff6f61;
+        border: none;
+        color: white;
+        padding: 8px 14px;
+        border-radius: 6px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+    button:hover {
+        background-color: #e85b50;
+    }
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    input, textarea {
+        padding: 8px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+    }
+   
+    
+</style>
+</head>
+<body>
+
+<header>🐾 PET ZONE🐾</header>
+<div class="container" id="app"></div>
+<center><div style="margin-top:50%;background-color: orange;">©Created by Saishree </div></center>
+
+<script>
+const pets = [
+    { id: 1, name: "Bella", type: "Dog", age: 3, breed: "Golden Retriever", fact: "Loves swimming!", img: "https://placedog.net/400/300?id=1" },
+    { id: 2, name: "Luna", type: "Cat", age: 2, breed: "Siamese", fact: "Enjoys sunny windowsills!", img: "https://images.fineartamerica.com/images/artworkimages/mediumlarge/1/siamese-white-cat-sadie-reneau.jpg" },
+    { id: 3, name: "Charlie", type: "Dog", age: 4, breed: "Beagle", fact: "Has a great sense of smell!", img: "https://tse2.mm.bing.net/th/id/OIP.UP5vG48bQIujF2r2uzE6XQAAAA?rs=1&pid=ImgDetMain&o=7&rm=3" },
+    { id: 4, name: "Oliver", type: "Cat", age: 1, breed: "Maine Coon", fact: "Very fluffy and friendly!", img: "https://tse1.mm.bing.net/th/id/OIP.c2Hn_bvmYt0wlPEy2JGqmQHaEo?rs=1&pid=ImgDetMain&o=7&rm=3" },
+    { id: 5, name: "Max", type: "Dog", age: 5, breed: "German Shepherd", fact: "Very protective!", img: "https://wallpaperaccess.com/full/370687.jpg" },
+    { id: 6, name: "Milo", type: "Cat", age: 3, breed: "Bengal", fact: "Loves climbing high places!", img: "https://tse4.mm.bing.net/th/id/OIP.ARGj_rZ7IydeGbCCibhYRwHaFI?rs=1&pid=ImgDetMain&o=7&rm=3" },
+    { id: 7, name: "Daisy", type: "Dog", age: 2, breed: "Poodle", fact: "Super intelligent!", img: "https://thehappypuppysite.com/wp-content/uploads/2017/12/poodle4.jpg" },
+    { id: 8, name: "Cleo", type: "Cat", age: 4, breed: "Persian", fact: "Loves long naps!", img: "https://wallpapers.com/images/hd/persian-cat-breed-g5uucpnd3q31utua.jpg" },
+     { id: 9, name: "Bunny", type: "Dog", age: 4, breed: "Collie", fact: "Loves long naps!", img: "https://www.akc.org/wp-content/uploads/2017/11/Collie-puppies-sitting-outdoors.jpg" }
+];
+
+
+const randomFacts = [
+    "Dogs can learn over 100 words!",
+    "Cats sleep for 70% of their lives.",
+    "Beagles have 220 million scent receptors!",
+    "Maine Coons are one of the largest domestic cat breeds."
+];
+
+let selectedPet = null;
+const app = document.getElementById('app');
+
+function showHomePage() {
+    app.innerHTML = `
+        <h2>Available Pets for Adoption</h2>
+        <div class="pet-list">
+            ${pets.map(p => `
+                <div class="pet-card">
+                    <img src="${p.img}" alt="${p.name}">
+                    <h3>${p.name}</h3>
+                    <p>Type: ${p.type}</p>
+                    <button onclick="showPetDetails(${p.id})">View Details</button>
+                </div>
+            `).join('')}
+        </div>
+    `;
+}
+
+function showPetDetails(id) {
+    const pet = pets.find(p => p.id === id);
+    selectedPet = pet;
+    app.innerHTML = `
+        <h2>${pet.name}</h2>
+        <img src="${pet.img}" style="width:100%;max-width:400px;border-radius:10px;">
+        <p><b>Age:</b> ${pet.age}</p>
+        <p><b>Breed:</b> ${pet.breed}</p>
+        <p><b>Fun Fact:</b> ${pet.fact}</p>
+        <button onclick="showAdoptionForm()">Adopt Me</button>
+        <button onclick="showHomePage()">Back</button>
+    `;
+}
+
+function showAdoptionForm() {
+    app.innerHTML = `
+        <h2>Adoption Form for ${selectedPet.name}</h2>
+        <form onsubmit="submitForm(event)">
+            <input type="text" id="name" placeholder="Your Name" required>
+            <input type="email" id="email" placeholder="Your Email" required>
+            <textarea id="reason" placeholder="Reason for adoption" required></textarea>
+            <button type="submit">Submit Adoption Request</button>
+        </form>
+        <button onclick="showPetDetails(${selectedPet.id})">Back</button>
+    `;
+}
+
+function submitForm(event) {
+    event.preventDefault();
+    const name = document.getElementById('name').value;
+    const requestNumber = Math.floor(Math.random() * 100000);
+    const fact = randomFacts[Math.floor(Math.random() * randomFacts.length)];
+    app.innerHTML = `
+        <h2>Adoption Request Submitted!</h2>
+        <p><b>Pet:</b> ${selectedPet.name}</p>
+        <p><b>Applicant Name:</b> ${name}</p>
+        <p><b>Request Number:</b> ${requestNumber}</p>
+        <p><b>Random Pet Fact:</b> ${fact}</p>
+        <button onclick="showHomePage()">Back to Home</button>
+    `;
+}
+
+showHomePage();
+
+
+
+</script>
+</body>
+</html>
+
+
+
+ 
