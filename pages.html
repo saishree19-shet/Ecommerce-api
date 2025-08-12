@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PROMPT FORGE</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 0;
+              background-image: url('https://wallpapercave.com/wp/6AMNW8B.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+        }
+
+
+
+        header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+
+        #chat-container {
+            max-width: 700px;
+            margin: 30px auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+
+        #conversation {
+            list-style-type: none;
+            padding: 0;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .user-msg, .bot-msg {
+            margin: 10px 0;
+            padding: 12px;
+            border-radius: 6px;
+        }
+
+        .user-msg {
+            background-color: #e8f0fe;
+            color: #1a73e8;
+            text-align: right;
+        }
+
+        .bot-msg {
+            background-color: #fdecea;
+            color: #d93025;
+            text-align: left;
+        }
+
+        #prompt {
+            width: calc(100% - 110px);
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        #send {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #430146;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        #send:hover {
+            background-color: #450242;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .input-row {
+                flex-direction: column;
+            }
+
+            #prompt {
+                width: 100%;
+            }
+
+            #send {
+                width: 100%;
+            }
+            
+        }
+    </style>
+    <script>
+        async function sendMsg() {
+            const promptNode = document.getElementById('prompt');
+            const chatListNode = document.getElementById('conversation');
+
+            // Show user message
+            let msgElement = document.createElement('li');
+            msgElement.className = 'user-msg';
+            msgElement.textContent = promptNode.value;
+            chatListNode.appendChild(msgElement);
+
+            // Prepare API request
+            const myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+            myHeaders.append("X-goog-api-key", "AIzaSyDqYqAHIqip5vewhtm_tWRDJfH6bEeMgjw");
+
+            const raw = JSON.stringify({
+                "contents": [
+                    {
+                        "parts": [
+                            {
+                                "text": promptNode.value
+                            }
+                        ]
+                    }
+                ]
+            });
+
+            const requestOptions = {
+                method: "POST",
+                headers: myHeaders,
+                body: raw,
+                redirect: "follow"
+            };
+
+            try {
+                const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent", requestOptions);
+                const result = await response.json();
+
+                const botText = result?.candidates?.[0]?.content?.parts?.[0]?.text || "No response";
+
+                let botAns = document.createElement('li');
+                botAns.className = 'bot-msg';
+                botAns.textContent = botText;
+                chatListNode.appendChild(botAns);
+            } catch (error) {
+                console.error("Error:", error);
+                let errorMsg = document.createElement('li');
+                errorMsg.className = 'bot-msg';
+                errorMsg.textContent = "Error fetching response.";
+                chatListNode.appendChild(errorMsg);
+            }
+
+            promptNode.value = "";
+        }
+    </script>
+</head>
+<body>
+    <header>
+        
+ <img src="https://img.freepik.com/premium-photo/isolated-digital-artwork-logo-representing-artificial-intelligence-featuring-blue-brain-set-against-black-background-generative-ai_155807-14595.jpg" alt=" KINDLE AILogo" style="height: 50px;justify-content: center;">
+<center><h1 img src="https://i.etsystatic.com/iusa/55d756/105390303/iusa_fullxfull.105390303_4529.jpg?version=0" alt=" KINDLE AILogo" style="height: 50px; color:white;">KINDLE AI</h1></center>
+   <center><p style="color:white;" >Craft better AI prompts for technical and creative tasks</p></center>
+    </header>
+
+    <div id="chat-container">
+        <ul id="conversation"></ul>
+        <div class="input-row">
+            <input id="prompt" placeholder="e.g., Generate a Python script to simulate a PID controller">
+            <button id="send" onclick="sendMsg()">Send</button>
+        </div>
+    </div>
+</body>
+</html>
