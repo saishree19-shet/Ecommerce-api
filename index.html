@@ -1,172 +1,657 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Pet Adoption</title>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-       
-          background-image: url('https://i.pinimg.com/736x/5d/39/ac/5d39ac6dd040f6f81ae874f1969a310b.jpg'); /* replace with your image URL */
-    background-size: cover; /* make image cover the screen */
-    background-position: center; /* center the image */
-    background-repeat: no-repeat; /* no tiling */
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Dakshina Kannada – Nature, Culture, and Adventure</title>
 
-    }
-    header {
-        background-color: #ff6f61;
-        color: white;
-        padding: 15px;
-        text-align: center;
-        font-size: 24px;
-    }
-    .container {
-        padding: 20px;
-        max-width: 900px;
-        margin: auto;
-    }
-    .pet-list {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-        gap: 20px;
-    }
-    .pet-card {
-        border: 1px solid #ccc;
-        border-radius: 10px;
-        padding: 10px;
-        text-align: center;
-        background: white;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    .pet-card img {
-        width: 100%;
-        height: 180px;
-        object-fit: cover;
-        border-radius: 8px;
-    }
-    button {
-        background-color: #ff6f61;
-        border: none;
-        color: white;
-        padding: 8px 14px;
-        border-radius: 6px;
-        cursor: pointer;
-        margin-top: 10px;
-    }
-    button:hover {
-        background-color: #e85b50;
-    }
-    form {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
-    input, textarea {
-        padding: 8px;
-        border-radius: 6px;
-        border: 1px solid #ccc;
-    }
-   
-    
+<!-- ====== Styles (modern, responsive, accessible) ====== -->
+<style>
+  :root{
+    --teal-600:#00695c; --teal-700:#004d40; --muted:#6b6b6b;
+    --card-shadow: 0 8px 24px rgba(4,19,26,0.08);
+    --glass: rgba(255,255,255,0.85);
+    --accent: linear-gradient(135deg,#0ea5a2 0%, #0f8f7f 100%);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;}
+  body{background:linear-gradient(180deg,#f6fbfb 0%, #f2f6f6 100%);color:#123;}
+  header{background:var(--accent); color:white;padding:22px 18px; text-align:center; box-shadow: 0 6px 18px rgba(4,19,26,0.08);}
+  header h1{margin:0;font-size:1.35rem;letter-spacing:0.2px}
+  header p{margin:6px 0 0;font-size:0.95rem;opacity:0.95}
+
+  nav{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:10px 12px;background:#0f8f7f;}
+  nav a{color:white;padding:10px 12px;border-radius:8px;text-decoration:none;font-weight:600}
+  nav a:hover, nav a.active{background:rgba(255,255,255,0.08)}
+
+  .container{max-width:1200px;margin:28px auto;padding:0 18px}
+
+  .banner{
+    background-image: linear-gradient(180deg, rgba(0,0,0,0.18), rgba(0,0,0,0.18)), url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=70');
+    background-size:cover;background-position:center;border-radius:12px;padding:48px 24px;color:white; display:flex;flex-direction:column;align-items:flex-start;gap:10px;
+    box-shadow:var(--card-shadow);
+  }
+  .banner h2{font-size:1.6rem;margin:0}
+  .banner p{opacity:0.95;margin:0;max-width:800px}
+
+  .layout-row{display:flex;gap:18px;align-items:center;margin-top:18px;flex-wrap:wrap}
+  .searchbox{flex:1;min-width:240px}
+  .searchbox input{width:100%;padding:12px 14px;border-radius:10px;border:1px solid #d6e6e3;background:white}
+  .select{min-width:180px}
+  select{padding:10px;border-radius:8px;border:1px solid #d6e6e3;background:white}
+
+  /* grid */
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;margin-top:18px}
+
+  .card{background:white;border-radius:12px;box-shadow:var(--card-shadow);overflow:hidden;display:flex;flex-direction:column;transition:transform .18s ease, box-shadow .18s ease}
+  .card:hover{transform:translateY(-6px)}
+  .card .media{height:150px;background-size:cover;background-position:center}
+  .card .card-body{padding:14px;display:flex;flex-direction:column;gap:8px;flex:1}
+  .card h3{margin:0;font-size:1.05rem}
+  .muted{color:var(--muted);font-size:0.92rem}
+  .desc{font-size:0.95rem;color:#233;padding-top:4px}
+  .card .meta{display:flex;justify-content:space-between;align-items:center;margin-top:auto}
+  .btn{background:var(--teal-600);color:white;padding:9px 12px;border-radius:8px;border:none;cursor:pointer;font-weight:600}
+  .btn.secondary{background:#eee;color:#123}
+  .btn.ghost{background:transparent;border:1px solid #e6e6e6;color:#123}
+
+  /* rating stars */
+  .stars{display:inline-flex;gap:4px;align-items:center}
+  .star{font-size:0.95rem;color:#ffb400}
+
+  /* modal */
+  .modal-backdrop{position:fixed;inset:0;background:rgba(10,10,10,0.45);display:none;align-items:center;justify-content:center;padding:20px;z-index:60}
+  .modal{background:white;border-radius:12px;max-width:900px;width:100%;max-height:90vh;overflow:auto;box-shadow:0 28px 80px rgba(2,12,18,0.4)}
+  .modal .modal-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid #f0f0f0}
+  .modal .modal-body{padding:18px;display:grid;grid-template-columns:1fr;gap:12px}
+  .modal .media-large{height:260px;background-size:cover;border-radius:10px}
+  .close-x{background:transparent;border:none;font-size:20px;cursor:pointer}
+
+  /* booking form */
+  form{background:white;padding:18px;border-radius:12px;box-shadow:var(--card-shadow);max-width:520px;margin:0 auto}
+  form .field{display:flex;flex-direction:column;margin-bottom:10px}
+  form input, form select{padding:10px;border-radius:8px;border:1px solid #ddd}
+  form label{font-weight:600;margin-bottom:6px}
+  footer{margin-top:34px;padding:20px;text-align:center;color:#fff;background:linear-gradient(90deg,#0f8f7f,#0ea5a2);border-radius:8px;max-width:1200px;margin-left:auto;margin-right:auto}
+
+  /* responsive tweaks */
+  @media (min-width:900px){
+    .modal .modal-body{grid-template-columns: 1fr 1fr}
+    .banner{padding:56px}
+  }
 </style>
 </head>
 <body>
 
-<header>🐾 PET ZONE🐾</header>
-<div class="container" id="app"></div>
-<center><div style="margin-top:50%;background-color: orange;">©Created by Saishree </div></center>
+<header>
+  <h1>COASTAL TREASURES – Nature, Culture, and Adventure</h1>
+  <p>Your Virtual TravelMate • Explore attractions, book stays, register for events</p>
+</header>
 
-<script>
-const pets = [
-    { id: 1, name: "Bella", type: "Dog", age: 3, breed: "Golden Retriever", fact: "Loves swimming!", img: "https://placedog.net/400/300?id=1" },
-    { id: 2, name: "Luna", type: "Cat", age: 2, breed: "Siamese", fact: "Enjoys sunny windowsills!", img: "https://images.fineartamerica.com/images/artworkimages/mediumlarge/1/siamese-white-cat-sadie-reneau.jpg" },
-    { id: 3, name: "Charlie", type: "Dog", age: 4, breed: "Beagle", fact: "Has a great sense of smell!", img: "https://tse2.mm.bing.net/th/id/OIP.UP5vG48bQIujF2r2uzE6XQAAAA?rs=1&pid=ImgDetMain&o=7&rm=3" },
-    { id: 4, name: "Oliver", type: "Cat", age: 1, breed: "Maine Coon", fact: "Very fluffy and friendly!", img: "https://tse1.mm.bing.net/th/id/OIP.c2Hn_bvmYt0wlPEy2JGqmQHaEo?rs=1&pid=ImgDetMain&o=7&rm=3" },
-    { id: 5, name: "Max", type: "Dog", age: 5, breed: "German Shepherd", fact: "Very protective!", img: "https://wallpaperaccess.com/full/370687.jpg" },
-    { id: 6, name: "Milo", type: "Cat", age: 3, breed: "Bengal", fact: "Loves climbing high places!", img: "https://tse4.mm.bing.net/th/id/OIP.ARGj_rZ7IydeGbCCibhYRwHaFI?rs=1&pid=ImgDetMain&o=7&rm=3" },
-    { id: 7, name: "Daisy", type: "Dog", age: 2, breed: "Poodle", fact: "Super intelligent!", img: "https://thehappypuppysite.com/wp-content/uploads/2017/12/poodle4.jpg" },
-    { id: 8, name: "Cleo", type: "Cat", age: 4, breed: "Persian", fact: "Loves long naps!", img: "https://wallpapers.com/images/hd/persian-cat-breed-g5uucpnd3q31utua.jpg" },
-     { id: 9, name: "Bunny", type: "Dog", age: 4, breed: "Collie", fact: "Loves long naps!", img: "https://www.akc.org/wp-content/uploads/2017/11/Collie-puppies-sitting-outdoors.jpg" }
-];
+<nav>
+  <a href="#" class="nav-link active" onclick="showPage('home', this)">Home</a>
+  <a href="#" class="nav-link" onclick="showPage('destinations', this)">Destinations</a>
+  <a href="#" class="nav-link" onclick="showPage('hotels', this)">Hotels & Stays</a>
+  <a href="#" class="nav-link" onclick="showPage('events', this)">Events & Festivals</a>
+  <a href="#" class="nav-link" onclick="showPage('booking', this)">Booking / Registration</a>
+</nav>
 
+<main class="container">
 
-const randomFacts = [
-    "Dogs can learn over 100 words!",
-    "Cats sleep for 70% of their lives.",
-    "Beagles have 220 million scent receptors!",
-    "Maine Coons are one of the largest domestic cat breeds."
-];
+  <!-- HOME -->
+  <section id="home" class="page">
+    <div class="banner" role="img" aria-label="Beach banner">
+      <h2>COASTAL TREASURES – Nature, Culture, and Adventure</h2>
+      <p>YOUR VIRTUAL TRAVELMATE— plan your trip with local insights, event registrations and easy bookings.</p>
 
-let selectedPet = null;
-const app = document.getElementById('app');
-
-function showHomePage() {
-    app.innerHTML = `
-        <h2>Available Pets for Adoption</h2>
-        <div class="pet-list">
-            ${pets.map(p => `
-                <div class="pet-card">
-                    <img src="${p.img}" alt="${p.name}">
-                    <h3>${p.name}</h3>
-                    <p>Type: ${p.type}</p>
-                    <button onclick="showPetDetails(${p.id})">View Details</button>
-                </div>
-            `).join('')}
+      <div class="layout-row" style="margin-top:18px;width:100%">
+        <div class="searchbox">
+          <input id="globalSearch" type="search" placeholder="Search attractions, hotels, events..." oninput="globalSearchHandler()" aria-label="Search">
         </div>
-    `;
+        <div class="select">
+          <select id="homeCategory" onchange="homeFilter()">
+            <option value="all">All categories</option>
+            <option value="Beach">Beach</option>
+            <option value="Temple">Temple</option>
+            <option value="Trekking">Trekking</option>
+            <option value="Nature Park">Nature Park</option>
+            <option value="Historic Site">Historic Site</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:20px">Top Attractions</h3>
+    <div id="homeGrid" class="grid" aria-live="polite"></div>
+  </section>
+
+  <!-- DESTINATIONS -->
+  <section id="destinations" class="page" style="display:none;">
+    <h2>Destinations</h2>
+    <div class="layout-row" style="margin-top:12px">
+      <div style="flex:1">
+        <select id="categoryFilter" onchange="filterDestinations()">
+          <option value="all">All</option>
+          <option value="Beach">Beach</option>
+          <option value="Temple">Temple</option>
+          <option value="Trekking">Trekking</option>
+          <option value="Nature Park">Nature Park</option>
+          <option value="Historic Site">Historic Site</option>
+        </select>
+      </div>
+      <div style="min-width:200px">
+        <input id="destSearch" type="search" placeholder="Search destinations..." oninput="filterDestinations()" />
+      </div>
+    </div>
+
+    <div id="destGrid" class="grid" style="margin-top:16px"></div>
+  </section>
+
+  <!-- HOTELS -->
+  <section id="hotels" class="page" style="display:none;">
+   <center> <h2>Hotels & Stays</h2></center>
+    <div class="layout-row" style="margin-top:12px">
+      <div style="flex:1">
+        <input id="hotelSearch" type="search" placeholder="Search hotels by name/location..." oninput="renderHotels()" />
+      </div>
+      <div>
+        <select id="sortHotels" onchange="renderHotels()">
+          <option value="popular">Sort: Popular</option>
+          <option value="price-low">Price: Low → High</option>
+          <option value="price-high">Price: High → Low</option>
+          <option value="rating">Rating</option>
+        </select>
+      </div>
+    </div>
+    <div id="hotelGrid" class="grid" style="margin-top:16px"></div>
+  </section>
+
+  <!-- EVENTS -->
+  <section id="events" class="page" style="display:none;">
+    <center><h2>Events & Festivals</h2></center>
+    <div class="layout-row" style="margin-top:12px">
+      <div style="flex:1">
+        <input id="eventSearch" type="search" placeholder="Search events..." oninput="renderEvents()" />
+      </div>
+      <div>
+        <select id="sortEvents" onchange="renderEvents()">
+          <option value="upcoming">Sort: Upcoming</option>
+          <option value="location">By Location</option>
+        </select>
+      </div>
+    </div>
+    <div id="eventsGrid" class="grid" style="margin-top:16px"></div>
+  </section>
+
+  <!-- BOOKING -->
+  <section id="booking" class="page" style="display:none;">
+    <center><h2>Bookings</h2></center>
+    <form id="bookingForm" onsubmit="submitBooking(event)" aria-label="Booking form">
+      <div class="field"><label for="name">Full name</label><input id="name" required></div>
+      <div class="field"><label for="email">Email</label><input id="email" type="email" required></div>
+      <div class="field"><label for="phone">Phone</label><input id="phone" required></div>
+
+      <div class="field"><label for="type">Booking type</label>
+        <select id="type" required onchange="toggleDate()">
+          <option value="">Choose</option>
+          <option value="Hotel">Hotel</option>
+          <option value="Event">Event</option>
+        </select>
+      </div>
+
+      <div class="field"><label for="referenceId">Reference ID (Hotel id or Event id)</label>
+        <input id="referenceId" type="number" required />
+      </div>
+
+      <div class="field" id="dateField" style="display:none">
+        <label for="date">Booking date (for hotels)</label>
+        <input id="date" type="date" />
+      </div>
+
+      <div style="display:flex;gap:10px;align-items:center;margin-top:8px">
+        <button class="btn" type="submit">Submit</button>
+        <button type="button" class="btn ghost" onclick="resetForm()">Reset</button>
+      </div>
+    </form>
+  </section>
+
+</main>
+
+<!-- modal for details -->
+<div id="modalBackdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal" role="document" id="detailModal">
+    <div class="modal-head">
+      <strong id="modalTitle">Title</strong>
+      <div>
+        <button class="btn secondary" id="modalBookBtn">Book/Register</button>
+        <button class="close-x" aria-label="Close" onclick="closeModal()">✕</button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div>
+        <div id="modalImage" class="media-large" style="background:#ddd"></div>
+        <p id="modalDesc" style="margin-top:10px"></p>
+        <p class="muted" id="modalMeta"></p>
+      </div>
+      <div>
+        <div id="embedArea" style="display:grid;gap:10px">
+          <!-- map (replace src with your Google Maps embed URL if you want) -->
+          <div id="mapEmbed" style="min-height:180px;background:#f7f7f7;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--muted)">
+            Map preview (replace with Google Maps embed)
+          </div>
+          <!-- youtube (replace video id) -->
+          <div id="videoEmbed" style="min-height:160px;background:#000;border-radius:8px;overflow:hidden;display:flex;align-items:center;justify-content:center;color:#fff">
+            <iframe id="ytFrame" width="100%" height="160" src="" title="Video" frameborder="0" allowfullscreen style="border:0"></iframe>
+          </div>
+
+          <!-- extra info -->
+          <div id="extraInfo" style="background:#fafafa;padding:12px;border-radius:8px">
+            <strong>Extra Info</strong>
+            <div id="extraList" style="margin-top:8px;color:var(--muted)"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  &copy; 2025 Dakshina Kannada Tourism • Bootcamp Hack • Built by Saishree Shet
+</footer>
+
+<!-- ====== Script: Data + Logic ====== -->
+<script>
+/* ---------- Hardcoded data: 10 destinations, 10 hotels, 10 events ---------- */
+/* Replace image_url / map / youtubeId with real links when backend available */
+const DESTINATIONS = [
+  {id:1,name:'Panambur Beach',category:'Beach',description:'Wide sands, vibrant sunsets. Good for evening strolls.',image_url:'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200&auto=format&fit=crop', map_embed:'',youtubeId:'dQw4w9WgXcQ'},
+  {id:2,name:'Someshwar Beach',category:'Beach',description:'Golden sands and calm waters for families.',image_url:'https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?q=80&w=1200&auto=format&fit=crop', map_embed:'',youtubeId:'dQw4w9WgXcQ'},
+  {id:3,name:'Kudremukh',category:'Trekking',description:'Lush green trails and panoramic peaks — a trekkers delight.',image_url:'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1200&auto=format&fit=crop', map_embed:'',youtubeId:'dQw4w9WgXcQ'},
+  {id:4,name:'Pilikula Nisargadhama',category:'Nature Park',description:'Eco-park with lake, zoo, and science centre.',image_url:'https://mangaloretourism.in/images/tourist-places/pilikula-nisargadhama-mangalore/pilikula-nisargadhama-mangalore-india-tourism-history.jpg', map_embed:'',youtubeId:'dQw4w9WgXcQ'},
+  {id:5,name:'Kudroli Gokarnath Temple',category:'Temple',description:'Grand temple known for its festivals and lights.',image_url:'https://lightuptemples.com/wp-content/uploads/temple/profile_image/kudroli-gokarnath-temple-gokarnanatheshwara-temple-karnataka.JPG', map_embed:'',youtubeId:'dQw4w9WgXcQ'},
+  {id:6,name:'Dharmasthala Temple',category:'Temple',description:'Historic spiritual centre attracting pilgrims from afar.',image_url:'https://www.mangaloretoday.com/contentfiles/2022/oct/Dharmasthala%20Temple19oct2022.JPG', map_embed:'',youtubeId:'dQw4w9WgXcQ'},
+  {id:7,name:'Jamia Masjid Zeenath Baksh',category:'Historic Site',description:'An architectural gem with centuries of history.',image_url:'https://karnatakatourism.org/wp-content/uploads/2020/06/masjid-zeenath-baksh-1.jpg', map_embed:'',youtubeId:'dQw4w9WgXcQ'},
+  {id:8,name:'Tannirbhavi Beach',category:'Beach',description:'Peaceful stretch perfect for picnics and photography.',image_url:'https://www.mangalurutaxi.com/uploads/image/top-travel-packages/top-places-to-visit-in-mangalore/tannirbhavi-beach.jpg', map_embed:'',youtubeId:'dQw4w9WgXcQ'},
+  {id:9,name:'Sasihithlu Beach',category:'Beach',description:'Popular surf spot and surfer community nearby.',image_url:'https://hoteltheseaview.com/images/tourism/sasihitlu.jpg', map_embed:'',youtubeId:'dQw4w9WgXcQ'},
+  {id:10,name:'Kateel Temple',category:'Temple',description:'Temple on the river bank with serene surroundings.',image_url:'https://i.pinimg.com/originals/19/c4/f3/19c4f3d3410802e7b46dbad94cb1e032.jpg', map_embed:'',youtubeId:'dQw4w9WgXcQ'}
+];
+
+const images = [
+  "https://images.unsplash.com/photo-1560347876-aeef00ee58a1?q=80&w=1200&auto=format&fit=crop",
+  "https://www.lemontreehotels.com/kimages/ltpVimanNagarPune.jpg",
+  "https://cf.bstatic.com/xdata/images/hotel/square600/193215845.webp?k=46bb637ce44c4aa5a0f72cdd490a186bba248533de91b4930bb5aace1fd38284&o=",
+  "https://cf.bstatic.com/xdata/images/hotel/max1024x768/386516730.jpg?k=010021c4b79cf89b87e870b394f725293dc1b4d422a19c1da36869aebcc63904&o=&hp=1",
+  "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1200&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=1200&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1200&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1505691938895-1758d7feb511?q=80&w=1200&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1600585154526-990dced4db0d?q=80&w=1200&auto=format&fit=crop",
+  "https://live.staticflickr.com/4404/36497680535_6e5686642c_z.jpg",
+  "https://www.holidify.com/images/cmsuploads/compressed/588c59a2-ff9d-44be-869b-c0b6e1a294fd_20210629225502.jpg"
+];
+
+const HOTELS = Array.from({ length: 10 }, (_, i) => ({
+  id: i + 1,
+  name: `HOTEL ${i + 1}`,
+  location: i % 2 === 0 ? "Mangalore" : "Ullal",
+  price_per_night: (2000 + i * 250).toFixed(2),
+  rating: (4.0 + (i % 5) * 0.2).toFixed(1),
+  description: "Comfortable rooms, wifi, breakfast included. Family-friendly.",
+  image_url: images[i] // Pick image by index
+}));
+
+console.log(HOTELS);
+
+const EVENTS = Array.from({length:10},(_,i)=>({
+  id: i+1,
+  name: `Cultural Fest ${i+1}`,
+  date: `2025-12-${String(i+1).padStart(2,'0')}`,
+  location: i%2===0 ? 'Mangalore Grounds' : 'Temple Courtyard',
+  description: 'Traditional dance, music, food stalls and family activities.',
+  image_url: 'https://tds.indianeagle.com/wp-content/uploads/2018/09/Karnataka-Culture-and-Tradition-630x420.png'
+}));
+
+/* ---------- App state ---------- */
+let currentDetail = null;
+
+/* ---------- Utilities & Renderers ---------- */
+function byId(id){return document.getElementById(id)}
+
+function showPage(pageId, el){
+  document.querySelectorAll('.page').forEach(p=>p.style.display='none');
+  byId(pageId).style.display='block';
+  document.querySelectorAll('nav a').forEach(a=>a.classList.remove('active'));
+  if(el) el.classList.add('active'); // nav button
+  // hide modal when switching
+  closeModal();
 }
 
-function showPetDetails(id) {
-    const pet = pets.find(p => p.id === id);
-    selectedPet = pet;
-    app.innerHTML = `
-        <h2>${pet.name}</h2>
-        <img src="${pet.img}" style="width:100%;max-width:400px;border-radius:10px;">
-        <p><b>Age:</b> ${pet.age}</p>
-        <p><b>Breed:</b> ${pet.breed}</p>
-        <p><b>Fun Fact:</b> ${pet.fact}</p>
-        <button onclick="showAdoptionForm()">Adopt Me</button>
-        <button onclick="showHomePage()">Back</button>
+// render small cards (used on home)
+function renderHomeGrid(){
+  const container = byId('homeGrid');
+  container.innerHTML = '';
+  // show first 6 items (mixed) or filtered category
+  const cat = byId('homeCategory').value || 'all';
+  const search = byId('globalSearch').value.toLowerCase().trim();
+  const combined = [...DESTINATIONS, ...HOTELS.map(h=>({id:`h${h.id}`, name:h.name, description:h.description, image_url:h.image_url, type:'hotel'})), ...EVENTS.map(e=>({id:`e${e.id}`,name:e.name, description:e.description, image_url:e.image_url, type:'event'}))];
+  let list = combined.filter(item=>{
+    if(cat!=='all' && item.category && item.category !== cat) return false;
+    if(search && !(item.name.toLowerCase().includes(search) || (item.description||'').toLowerCase().includes(search))) return false;
+    return true;
+  }).slice(0,8);
+  list.forEach(item=>{
+    const card = document.createElement('div')
+    card.className='card';
+    card.innerHTML = `
+      <div class="media" style="background-image:url('${item.image_url}')"></div>
+      <div class="card-body">
+        <h3>${escapeHtml(item.name)}</h3>
+        <div class="desc">${escapeHtml(item.description || '')}</div>
+        <div class="meta">
+          <div class="muted">${item.category || item.type || ''}</div>
+          <div style="display:flex;gap:8px">
+            <button class="btn ghost" onclick="openDetail('${item.id}')">View</button>
+            <button class="btn" onclick="ctaFromHome('${item.id}')">${item.type==='hotel' || (String(item.id).startsWith('h')) ? 'Book' : 'Register'}</button>
+          </div>
+        </div>
+      </div>
     `;
+    container.appendChild(card);
+  })
 }
 
-function showAdoptionForm() {
-    app.innerHTML = `
-        <h2>Adoption Form for ${selectedPet.name}</h2>
-        <form onsubmit="submitForm(event)">
-            <input type="text" id="name" placeholder="Your Name" required>
-            <input type="email" id="email" placeholder="Your Email" required>
-            <textarea id="reason" placeholder="Reason for adoption" required></textarea>
-            <button type="submit">Submit Adoption Request</button>
-        </form>
-        <button onclick="showPetDetails(${selectedPet.id})">Back</button>
+function homeFilter(){ renderHomeGrid(); }
+
+/* Destinations list */
+function renderDestinations(){
+  const container = byId('destGrid');
+  container.innerHTML = '';
+  DESTINATIONS.forEach(d=>{
+    const card = document.createElement('div'); card.className='card';
+    card.innerHTML = `
+      <div class="media" style="background-image:url('${d.image_url}')"></div>
+      <div class="card-body">
+        <h3>${escapeHtml(d.name)}</h3>
+        <div class="muted">${escapeHtml(d.category)}</div>
+        <div class="desc">${escapeHtml(d.description)}</div>
+        <div class="meta">
+          <div class="muted">ID: ${d.id}</div>
+          <div>
+            <button class="btn ghost" onclick="openDetail(${d.id})">Details</button>
+            <button class="btn" onclick="bookFromItem('Destination', ${d.id})">Plan Trip</button>
+          </div>
+        </div>
+      </div>
     `;
+    container.appendChild(card);
+  });
 }
 
-function submitForm(event) {
-    event.preventDefault();
-    const name = document.getElementById('name').value;
-    const requestNumber = Math.floor(Math.random() * 100000);
-    const fact = randomFacts[Math.floor(Math.random() * randomFacts.length)];
-    app.innerHTML = `
-        <h2>Adoption Request Submitted!</h2>
-        <p><b>Pet:</b> ${selectedPet.name}</p>
-        <p><b>Applicant Name:</b> ${name}</p>
-        <p><b>Request Number:</b> ${requestNumber}</p>
-        <p><b>Random Pet Fact:</b> ${fact}</p>
-        <button onclick="showHomePage()">Back to Home</button>
+function filterDestinations(){
+  const cat = byId('categoryFilter').value;
+  const q = byId('destSearch').value.toLowerCase().trim();
+  const filtered = DESTINATIONS.filter(d=>{
+    if(cat!=='all' && d.category !== cat) return false;
+    if(q && !(d.name.toLowerCase().includes(q) || d.description.toLowerCase().includes(q))) return false;
+    return true;
+  });
+  const container = byId('destGrid'); container.innerHTML='';
+  filtered.forEach(d=>{
+    const el = document.createElement('div'); el.className='card';
+    el.innerHTML = `
+      <div class="media" style="background-image:url('${d.image_url}')"></div>
+      <div class="card-body">
+        <h3>${escapeHtml(d.name)}</h3>
+        <div class="muted">${escapeHtml(d.category)}</div>
+        <div class="desc">${escapeHtml(d.description)}</div>
+        <div class="meta">
+          <div class="muted">ID: ${d.id}</div>
+          <div>
+            <button class="btn ghost" onclick="openDetail(${d.id})">Details</button>
+            <button class="btn" onclick="bookFromItem('Destination', ${d.id})">Plan Trip</button>
+          </div>
+        </div>
+      </div>
     `;
+    container.appendChild(el);
+  })
 }
 
-showHomePage();
+/* Hotels */
+function renderHotels(){
+  const q = byId('hotelSearch').value.toLowerCase().trim();
+  const sort = byId('sortHotels').value;
+  let list = HOTELS.filter(h=>{
+    if(!q) return true;
+    return h.name.toLowerCase().includes(q) || h.location.toLowerCase().includes(q) || (h.description||'').toLowerCase().includes(q);
+  });
+  if(sort==='price-low') list.sort((a,b)=>parseFloat(a.price_per_night)-parseFloat(b.price_per_night));
+  if(sort==='price-high') list.sort((a,b)=>parseFloat(b.price_per_night)-parseFloat(a.price_per_night));
+  if(sort==='rating') list.sort((a,b)=>parseFloat(b.rating)-parseFloat(a.rating));
+  const container = byId('hotelGrid'); container.innerHTML='';
+  list.forEach(h=>{
+    const el = document.createElement('div'); el.className='card';
+    el.innerHTML = `
+      <div class="media" style="background-image:url('${h.image_url}')"></div>
+      <div class="card-body">
+        <h3>${escapeHtml(h.name)}</h3>
+        <div class="muted">${escapeHtml(h.location)} • ₹${h.price_per_night} / night</div>
+        <div class="desc">${escapeHtml(h.description)}</div>
+        <div style="margin-top:8px">
+          <div class="stars">${renderStars(h.rating)} <span style="margin-left:8px;color:var(--muted)">${h.rating}</span></div>
+        </div>
+        <div class="meta">
+          <div class="muted">ID: ${h.id}</div>
+          <div>
+            <button class="btn ghost" onclick="openDetail('hotel-'+${h.id})">Details</button>
+            <button class="btn" onclick="bookFromItem('Hotel', ${h.id})">Book Now</button>
+          </div>
+        </div>
+      </div>
+    `;
+    container.appendChild(el);
+  })
+}
 
+/* Events */
+function renderEvents(){
+  const q = byId('eventSearch').value.toLowerCase().trim();
+  const sort = byId('sortEvents').value;
+  let list = EVENTS.filter(e => !q || e.name.toLowerCase().includes(q) || e.description.toLowerCase().includes(q));
+  if(sort==='location') list.sort((a,b)=>a.location.localeCompare(b.location));
+  else list.sort((a,b)=> new Date(a.date) - new Date(b.date));
+  const container = byId('eventsGrid'); container.innerHTML='';
+  list.forEach(ev=>{
+    const el = document.createElement('div'); el.className='card';
+    el.innerHTML = `
+      <div class="media" style="background-image:url('${ev.image_url}')"></div>
+      <div class="card-body">
+        <h3>${escapeHtml(ev.name)}</h3>
+        <div class="muted">${escapeHtml(ev.location)} • ${escapeHtml(ev.date)}</div>
+        <div class="desc">${escapeHtml(ev.description)}</div>
+        <div class="meta">
+          <div class="muted">ID: ${ev.id}</div>
+          <div>
+            <button class="btn ghost" onclick="openDetail('event-'+${ev.id})">Details</button>
+            <button class="btn" onclick="bookFromItem('Event', ${ev.id})">Register</button>
+          </div>
+        </div>
+      </div>
+    `;
+    container.appendChild(el);
+  })
+}
 
+/* ---------- Detail modal ---------- */
+function openDetail(rawId){
+  // determine type and id
+  let type='destination', id=rawId;
+  if(String(rawId).startsWith('h')){ type='hotel'; id = Number(String(rawId).slice(1)); }
+  if(String(rawId).startsWith('e')){ type='event'; id = Number(String(rawId).slice(2)); }
+  if(String(rawId).startsWith('hotel-')){ type='hotel'; id = Number(String(rawId).split('-')[1]); }
+  if(String(rawId).startsWith('event-')){ type='event'; id = Number(String(rawId).split('-')[1]); }
+  // normalized search
+  let data = null;
+  if(type==='destination') data = DESTINATIONS.find(d=>d.id==id);
+  if(type==='hotel') data = HOTELS.find(h=>h.id==id);
+  if(type==='event') data = EVENTS.find(e=>e.id==id);
 
+  if(!data){
+    // maybe rawId was simple numeric string => try destinations
+    data = DESTINATIONS.find(d=>d.id==rawId) || HOTELS.find(h=>h.id==rawId) || EVENTS.find(e=>e.id==rawId);
+    if(!data) return alert('Item not found');
+  }
+
+  currentDetail = {type,id,data};
+  // fill modal
+  byId('modalTitle').textContent = data.name;
+  byId('modalImage').style.backgroundImage = `url('${data.image_url}')`;
+  byId('modalDesc').textContent = data.description || '';
+  byId('modalMeta').textContent = (data.category ? data.category + ' • ' : '') + (data.location ? data.location : '') + (data.date ? ' • ' + data.date : '');
+  // map / youtube placeholders (user replace with real embed URLs)
+  if(data.map_embed){
+    byId('mapEmbed').innerHTML = data.map_embed;
+  } else {
+    byId('mapEmbed').innerHTML = `<div style="padding:10px;text-align:center;color:var(--muted)">Map not provided. Replace 'map_embed' in data with Google Maps iframe.</div>`;
+  }
+  if(data.youtubeId){
+    byId('ytFrame').src = `https://www.youtube.com/embed/${data.youtubeId}`;
+  } else {
+    byId('ytFrame').src = '';
+  }
+  // extra info
+  let extras = [];
+  if(type==='hotel'){ extras.push(`Price per night: ₹${data.price_per_night}`); extras.push(`Rating: ${data.rating}`); }
+  if(type==='event'){ extras.push(`Date: ${data.date}`); extras.push(`Location: ${data.location}`); }
+  // render
+  byId('extraList').innerHTML = extras.map(x=>`<div>${escapeHtml(x)}</div>`).join('');
+  // set book button to fill booking form
+  byId('modalBookBtn').onclick = ()=>{ bookFromItem(type==='hotel'||type==='Hotel' ? 'Hotel' : (type==='event'?'Event':'Destination'), data.id) };
+
+  // show modal
+  const backdrop = byId('modalBackdrop');
+  backdrop.style.display='flex';
+  backdrop.setAttribute('aria-hidden','false');
+}
+
+function closeModal(){
+  byId('modalBackdrop').style.display='none';
+  byId('ytFrame').src = '';
+  currentDetail = null;
+}
+
+/* ---------- Booking helpers ---------- */
+function bookFromItem(type, id){
+  // open booking page & prefill
+  showPage('booking', document.querySelectorAll('nav a')[4]);
+  byId('type').value = type==='Hotel' ? 'Hotel' : 'Event';
+  toggleDate();
+  byId('referenceId').value = id;
+  // focus on form
+  byId('name').focus();
+}
+
+function ctaFromHome(rawId){
+  // determine if hotel or event
+  if(String(rawId).startsWith('h') || String(rawId).includes('Seaside')) {
+    // hotel
+    const id = typeof rawId==='string' && rawId.startsWith('h') ? Number(rawId.slice(1)) : rawId;
+    bookFromItem('Hotel', id);
+  } else {
+    // event or destination -> register/plan
+    // try numeric ID
+    const id = Number(String(rawId).replace(/\D/g,''));
+    if(Number.isFinite(id)) bookFromItem('Event', id);
+    else bookFromItem('Destination', rawId);
+  }
+}
+
+function toggleDate(){
+  const t = byId('type').value;
+  byId('dateField').style.display = t==='Hotel' ? 'block' : 'none';
+}
+
+function resetForm(){
+  byId('bookingForm').reset();
+  toggleDate();
+}
+
+/* Submit booking (sends to backend if available; currently does client-side alert) */
+async function submitBooking(e){
+  e.preventDefault();
+  const payload = {
+    customer_name: byId('name').value,
+    customer_email: byId('email').value,
+    customer_phone: byId('phone').value
+  };
+  const type = byId('type').value;
+  let endpoint = '', body = {};
+  if(type==='Hotel'){
+    endpoint = '/bookings';
+    body = {...payload, booking_type:'Hotel', reference_id: parseInt(byId('referenceId').value || '0',10), booking_date: byId('date').value || null};
+  } else {
+    endpoint = '/event-registrations';
+    body = {...payload, event_id: parseInt(byId('referenceId').value || '0',10)};
+  }
+
+  // Try to POST to backend (if running) otherwise show fallback success
+  const apiBase = 'http://localhost:3005';
+  try {
+    const res = await fetch(`${apiBase}${endpoint}`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(body)
+    });
+    if(res.ok){
+      alert('Booking/Registration submitted successfully to server!');
+      resetForm();
+    } else {
+      const text = await res.text().catch(()=>null);
+      alert('Server returned an error: ' + (text || res.status));
+    }
+  } catch(err){
+    // backend not running → simulate success and show payload for debugging
+    console.warn('POST failed (backend may not be running)', err);
+    alert('showing simulated success.\n\nPayload:\n' + JSON.stringify(body,null,2));
+    resetForm();
+  }
+}
+
+/* ---------- Helpers ---------- */
+function renderStars(rating){
+  const n = Math.round(rating || 0);
+  return Array.from({length:5},(_,i)=> i < n ? '<span class="star">★</span>' : '<span class="star" style="opacity:.18">★</span>').join('');
+}
+
+function escapeHtml(s=''){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* Search handlers */
+function globalSearchHandler(){
+  // show results on home grid
+  renderHomeGrid();
+}
+
+/* ---------- Init ---------- */
+(function init(){
+  // initial render
+  renderHomeGrid();
+  renderDestinations();
+  renderHotels();
+  renderEvents();
+
+  // show home by default
+  showPage('home', document.querySelectorAll('nav a')[0]);
+
+  // keyboard: close modal on Esc
+  document.addEventListener('keydown', e => { if(e.key==='Escape') closeModal(); });
+
+  // clicking outside modal closes
+  byId('modalBackdrop').addEventListener('click', (ev)=>{
+    if(ev.target === ev.currentTarget) closeModal();
+  });
+})();
 </script>
 </body>
 </html>
-
-
-
- 
